@@ -8,3 +8,9 @@ pip3 install python-telegram-bot --upgrade
 
 ## Funtions
 Here I will describe the basics use of the funtions
+
+###### /start
+Basically start the bot
+
+###### /fecha
+Return the current date in two possible modes, in YYYY-MM-DD or "DD de MM del YYYY" 
