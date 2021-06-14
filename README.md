@@ -3,8 +3,8 @@ A Telegram Bot for practice
 
 LIBRERÍAS:
 pip install python-telegram-bot --upgrade
-o
-pip3 install python-telegram-bot --upgrade
+
+pip install qrcode
 
 ## Funtions
 Here I will describe the basics use of the funtions
