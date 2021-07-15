@@ -1,13 +1,13 @@
 bot_token = "1837182286:AAFSDP59Gwy3RRJg3kfdfj3IueO4sZ3OyMM"
 
-from telegram.ext import Updater #ENVIAR MENSAJES RESPONDIENDO
+from telegram.ext import CallbackQueryHandler, CommandHandler, ConversationHandler, Filters, MessageHandler, Updater #ENVIAR MENSAJES RESPONDIENDO
 import logging #INICIO DE SESION
-from telegram.ext import CommandHandler, Filters, MessageHandler #COMANDOS
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime
 import random
-from telegram import Bot
+from telegram import Bot, ChatAction, InlineKeyboardMarkup, InlineKeyboardButton
 import os
+
+
 
 
 #FUNCIONES DE LOS COMANDOS
@@ -133,7 +133,19 @@ def enviarSinResponder():
         bot = Bot(bot_token) #DEFINE "bot" A NUESTRO TOKEN
         
         bot.send_message(chat_id=i,text="ESTO ES UNA PRUEBA2!") #MANDA MENSAJE
+        
 
+
+def teclado(update, context):
+    update.message.reply_text(
+        text='Hola, bienvenido, qué deseas hacer?\n\nUsa /qr para generar un código qr.',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Generar qr', callback_data='qr')],
+            [InlineKeyboardButton(text='Sobre el autor', url='')],
+        ])
+    )
+
+    
 
 if __name__ == '__main__':
 
@@ -147,13 +159,15 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(CommandHandler('personas', personas))
     dispatcher.add_handler(CommandHandler('help', help))
-    dispatcher.add_handler(MessageHandler(Filters.text, text))
-
+    #dispatcher.add_handler(MessageHandler(Filters.text, text))
     dispatcher.add_handler(CommandHandler('fecha', fecha))
     dispatcher.add_handler(CommandHandler('instagram', instagram))
     dispatcher.add_handler(CommandHandler('frase', frase))
     dispatcher.add_handler(CommandHandler('Moneda', moneda))
     dispatcher.add_handler(CommandHandler('echo', echo))
+    dispatcher.add_handler(CommandHandler('teclado', teclado))
+    
+    
     
     dispatcher.add_error_handler(error)
     
