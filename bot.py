@@ -9,7 +9,6 @@ import os
 
 
 
-
 #FUNCIONES DE LOS COMANDOS
 def start(update, context):
     id = update.effective_chat.id 
@@ -21,6 +20,7 @@ def start(update, context):
     
 def help(update, context):
     update.message.reply_text('help command received')
+
 
 # function to handle errors occured in the dispatcher 
 def error(update, context):
@@ -48,9 +48,8 @@ def fecha(update, context):
     now = date.today()
 
     id = update.effective_chat.id
-    entrada = (str(id) + ' - ' + 'Fecha' + ' - ' +str(selection))
-    print(entrada) 
-    historial(entrada)
+    infocom(id, "Fecha", str(selection))
+
 
     if(selection == 1):
         context.bot.send_message(chat_id=id, text=str(now)) 
@@ -65,9 +64,7 @@ def fecha(update, context):
 #Envia el enlace a instagram
 def instagram(update,context):
     id = update.effective_chat.id
-    entrada = (str(id) + ' - ' + 'Instagram')
-    print(entrada) 
-    historial(entrada)
+    infocom(id, "Instagram")
 
     instagram = "https://www.instagram.com/pablosr06/"
     context.bot.send_message(chat_id=id, text=instagram) 
@@ -82,10 +79,9 @@ def frase(update, context):
 
 
     selection = random.randint(0, len(datos))
+
     id = update.effective_chat.id
-    entrada = str(id) + ' - ' + 'Frase' + ' - ' + str(selection) 
-    print(entrada) 
-    historial(entrada)
+    infocom(id, 'Frase', str(selection))
 
     frase = datos[selection]
     context.bot.send_message(chat_id=id, text=frase) 
@@ -103,9 +99,8 @@ def echo(update, context):
 def moneda(update, context):
     selection = random.randint(0, 1)
     id = update.effective_chat.id
-    entrada = str(id) + ' - ' + 'Moneda' + ' - ' + str(selection)
-    print(entrada) 
-    historial(entrada)
+
+    infocom(id, "Moneda", str(selection))
 
     if(selection == 0):
         msg = 'Cara'
@@ -113,6 +108,19 @@ def moneda(update, context):
         msg = 'Cruz'
         
     context.bot.send_message(chat_id=id, text=msg) 
+
+
+# Funcion para controlar la escritura en el historial y en la consola 
+
+def infocom(id, nombre, selection=0 ):  
+
+    if(selection == 0):
+        entrada = (str(id) + ' - ' + nombre)
+    else:  
+        entrada = (str(id) + ' - ' + nombre + ' - ' + selection)
+    
+    print(entrada) 
+    historial(entrada)
 
 #ADD TO historial.txt ALL the history that is printed in the console
 def historial(historia):    
