@@ -6,6 +6,7 @@ from datetime import date, datetime
 import random
 from telegram import Bot, ChatAction, InlineKeyboardMarkup, InlineKeyboardButton
 import os
+import qrcode
 
 
 
@@ -75,6 +76,16 @@ def instagram(update,context):
     instagram = "https://www.instagram.com/pablosr06/"
     context.bot.send_message(chat_id=id, text=instagram) 
 
+#Info sobre el autor
+def autor(update, context):
+    update.message.reply_text(
+        text='El autor es Pablo Suárez',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Otros enlaces', url='https://linktr.ee/pablosr')],
+        ])
+    )
+
+
 #Envia una frase aleatoria
 def frase(update, context):
     datos = []
@@ -122,7 +133,7 @@ def infocom(id, nombre, selection=0 ):
     now = date.today()  
 
     if(selection == 0):
-        entrada = (%(asctime)s + ' - ' + nombre)
+        entrada = (str(now) + ' - ' + nombre)
     else:  
         entrada = (str(now) + ' - ' + nombre + ' - ' + selection)
     
@@ -160,21 +171,11 @@ def enviarSinResponder():
         
 
 
-def teclado(update, context):
-    update.message.reply_text(
-        text='Hola, bienvenido, qué deseas hacer?\n\nUsa /qr para generar un código qr.',
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Generar qr', callback_data='qr')],
-            [InlineKeyboardButton(text='Sobre el autor', url='')],
-        ])
-    )
-
     
 
 if __name__ == '__main__':
 
     updater = Updater(token = bot_token, use_context = True)
-    dispatcher = updater.dispatcher
 
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
 
@@ -189,8 +190,12 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler('frase', frase))
     dispatcher.add_handler(CommandHandler('Moneda', moneda))
     dispatcher.add_handler(CommandHandler('echo', echo))
-    dispatcher.add_handler(CommandHandler('teclado', teclado))
+
+    dispatcher.add_handler(CommandHandler('autor', autor))
+
     
+    
+
     
     #dispatcher.add_error_handler(error)
     

@@ -20,11 +20,14 @@ Return the current date in two possible modes, in YYYY-MM-DD or "DD de MM del YY
 ###### /frase
 Return one random sentence of the "frases.txt" document 
 
+###### /moneda
+Flip a coin and return "Cara" or "Cruz"
+
 ###### /instagram
 Return my instagram link
 
-###### /moneda
-Flip a coin and return "Cara" or "Cruz"
+###### /autor
+Return button with a link
 
 
 ## Author
