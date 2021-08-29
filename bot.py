@@ -33,11 +33,17 @@ def text(update, context):
     
     
 def personas(update, context):
-    print(update.effective_chat.id) #ESCRIBE EL CHAT ID DE LA PERSONA
+    id = update.effective_chat.id
+
+    print(id) #ESCRIBE EL CHAT ID DE LA PERSONA
     #ALMACENA EL CHAT ID A EL ARCHIVO: personas/personas.txt
     archivo = open('personas/personas.txt', 'a')
-    archivo.write(str(update.effective_chat.id)+"\n")
+    archivo.write(str(id)+"\n")
     archivo.close()
+
+    dir = 'listas/historial/' + str(id) + '.txt'
+    file = open(dir, "a")
+    file.close()
     
     context.bot.send_message(chat_id=update.effective_chat.id, text="AHORA ESTÁS EN LA LISTA!!") #RESPONDE A EL CHAT EN EL QUE LE HABLAN
 
@@ -112,20 +118,30 @@ def moneda(update, context):
 
 # Funcion para controlar la escritura en el historial y en la consola 
 
-def infocom(id, nombre, selection=0 ):  
+def infocom(id, nombre, selection=0 ):
+    now = date.today()  
 
     if(selection == 0):
-        entrada = (str(id) + ' - ' + nombre)
+        entrada = (%(asctime)s + ' - ' + nombre)
     else:  
-        entrada = (str(id) + ' - ' + nombre + ' - ' + selection)
+        entrada = (str(now) + ' - ' + nombre + ' - ' + selection)
     
     print(entrada) 
-    historial(entrada)
+    historial(entrada, id)
+    
 
 #ADD TO historial.txt ALL the history that is printed in the console
+''''
 def historial(historia):    
     Historial = [] 
     with open('listas/historial.txt', 'r+') as archivo: 
+        contenido= archivo.read()
+        archivo.write(historia + "\n") '''
+
+def historial(historia, id):    
+    Historial = [] 
+    dir = 'listas/historial/' + str(id) + '.txt'
+    with open(dir, 'r+') as archivo: 
         contenido= archivo.read()
         archivo.write(historia + "\n")
 
@@ -176,8 +192,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler('teclado', teclado))
     
     
-    
-    dispatcher.add_error_handler(error)
+    #dispatcher.add_error_handler(error)
     
     updater.start_polling()
     updater.idle()
