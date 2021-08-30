@@ -1,13 +1,13 @@
 bot_token = "1837182286:AAFSDP59Gwy3RRJg3kfdfj3IueO4sZ3OyMM"
 
-from telegram.ext import CallbackQueryHandler, CommandHandler, ConversationHandler, Filters, MessageHandler, Updater #ENVIAR MENSAJES RESPONDIENDO
+from telegram.ext import CallbackQueryHandler, CommandHandler, ConversationHandler, Filters, MessageHandler, Updater, commandhandler #ENVIAR MENSAJES RESPONDIENDO
 import logging #INICIO DE SESION
 from datetime import date, datetime
 import random
 from telegram import Bot, ChatAction, InlineKeyboardMarkup, InlineKeyboardButton
 import os
 import qrcode
-
+import pyshorteners
 
 
 #FUNCIONES DE LOS COMANDOS
@@ -18,14 +18,15 @@ def start(update, context):
     historial(entrada) #Envia a la funcion historial, la entrada
     
     context.bot.send_message(chat_id=id, text="BOT INICIADO!") #RESPONDE EL CHAT
-    
+
+#Comando help que no hace nada  
 def help(update, context):
     update.message.reply_text('help command received')
-
 
 # function to handle errors occured in the dispatcher 
 def error(update, context):
     update.message.reply_text('an error occured')
+
 
 # function to handle normal text 
 def text(update, context):
@@ -103,7 +104,7 @@ def frase(update, context):
     frase = datos[selection]
     context.bot.send_message(chat_id=id, text=frase) 
     
-
+#Funcion echo sin terminar
 def echo(update, context):
     if(len(update.args) > 0):
         user_says = " ".join(context.args)
@@ -149,6 +150,7 @@ def historial(historia):
         contenido= archivo.read()
         archivo.write(historia + "\n") '''
 
+#ADD the history to his own id.txt
 def historial(historia, id):    
     Historial = [] 
     dir = 'listas/historial/' + str(id) + '.txt'
@@ -169,9 +171,56 @@ def enviarSinResponder():
         
         bot.send_message(chat_id=i,text="ESTO ES UNA PRUEBA2!") #MANDA MENSAJE
         
+#Funcion para acortar URL
 
+INPUT_URL = 0
+
+def url(update, context):
+    
+    update.message.reply_text(
+        text = 'Tienes un enlace para acortar?',
+        reply_markup = InlineKeyboardMarkup([
+            [InlineKeyboardButton(text = 'Acortar URL', callback_data = 'url')]
+        ])
+    )
+
+def url_callback_handler(update, context):
+
+    query = update.callback_query
+    query.answer()
+
+    #Cambia el primer mensaje por otro
+    query.edit_message_text(
+        text='Envíame un enlace para acortarlo.'
+    )
+
+    return INPUT_URL
+
+def input_url(update, context):
+
+    id = update.effective_chat.id
+
+    #Guarda el mensaje con el link
+    url = update.message.text
+    #Informacion sobre el chat
+    chat = update.message.chat
 
     
+    infocom(id, 'URL', str(url))
+
+    #A la funcion de pyshorteners le das la url
+    s = pyshorteners.Shortener()
+    short = s.chilpit.short(url)
+
+    #Envia la nueva url 
+    chat.send_message(
+        text=short
+    )
+
+    #Termina 
+    return ConversationHandler.END
+
+
 
 if __name__ == '__main__':
 
@@ -190,11 +239,21 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler('frase', frase))
     dispatcher.add_handler(CommandHandler('Moneda', moneda))
     dispatcher.add_handler(CommandHandler('echo', echo))
-
     dispatcher.add_handler(CommandHandler('autor', autor))
 
+    dispatcher.add_handler(CommandHandler('url', url))
+
+    dispatcher.add_handler(ConversationHandler(
+        entry_points=[
+            CallbackQueryHandler(pattern='url', callback=url_callback_handler)
+        ],
+        states={
+            INPUT_URL: [MessageHandler(Filters.text, input_url)]
+        },
+        fallbacks=[]
+    ))
     
-    
+
 
     
     #dispatcher.add_error_handler(error)

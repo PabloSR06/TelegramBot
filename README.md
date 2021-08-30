@@ -8,6 +8,9 @@ pip install python-telegram-bot --upgrade
 
 pip install qrcode  //not jet
 
+pip install pyshorteners
+
+
 ## Funtions
 Here I will describe the basics use of the funtions
 
@@ -28,6 +31,9 @@ Return my instagram link
 
 ###### /autor
 Return button with a link
+
+###### /url
+To shorten a user-contributed link
 
 
 ## Author
