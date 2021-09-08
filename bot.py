@@ -45,16 +45,12 @@ def personas(update, context):
 
     try:
         os.mkdir('listas/' + str(id))
+        os.mkdir('listas/' + str(id) + '/notas')
     except:
         print('directorio ya creado')
         
 
-
     dir = 'listas/' + str(id) + '/historial' + '.txt'
-    file = open(dir, "a")
-    file.close()
-
-    dir = 'listas/' + str(id) + '/notas' + '.txt'
     file = open(dir, "a")
     file.close()
     
@@ -231,14 +227,11 @@ def input_url(update, context):
     #Termina 
     return ConversationHandler.END
 
-INPUT_NOTASNEW = 0
-INPUT_NOTASSEE = 0
-INPUT_NOTAS_VERTODAS = 0
-INPUT_NOTAS_ULTNOTA = 0
-INPUT_NOTAS_NUMNOTA = 0
+
+NEWNOTA_NOTA = 0 
+NEWNOTA_FINAL = 0 
 
 def notas(update, context):
-
     update.message.reply_text(
         text = 'Que quieres hacer?',
         reply_markup = InlineKeyboardMarkup([
@@ -247,100 +240,51 @@ def notas(update, context):
         ])
     )
 
-def newnotas_callback_handler(update, context):
+def newnotas_titulo(update, context):
 
     query = update.callback_query
     query.answer()
 
     #Cambia el primer mensaje por otro
     query.edit_message_text(
-        text='Que nota quieres añadir'
+        text='Titulo de la nota '
     )
-
-    return INPUT_NOTASNEW
-
-def newinput_notas(update, context):
-    id = update.effective_chat.id
-
-    #Guarda la nota
-    nota = update.message.text
-    #Informacion sobre el chat
-    chat = update.message.chat
-  
-    infocom(id, 'Notas', nota)
-
-    dir = 'listas/' + str(id) + '/notas' + '.txt'
-    with open(dir, 'r+') as archivo: 
-        contenido= archivo.read()
-        archivo.write(nota + "\n") 
-
-    #Envia la nota que se ha guardado
-    chat.send_message(
-        text = 'Guardado, ' + nota
-    )
-
-    #Termina 
-    return ConversationHandler.END
-
-def seenotas_callback_handler(update, context):
-    id = update.effective_chat.id
-
-    query = update.callback_query
-    query.answer()
     
-    '''
-    dir = 'listas/' + str(id) + '/notas' + '.txt'
-    with open(dir, 'r') as archivo: 
-        numnotas = len(archivo.readlines())
-    '''
+    return NEWNOTA_NOTA
 
-    #Cambia el primer mensaje por otro
-    query.edit_message_text(
-        text = 'Que quieres hacer?',
-        reply_markup = InlineKeyboardMarkup([
-            [InlineKeyboardButton(text = 'Ver todas ', callback_data='vertodas')],
-            [InlineKeyboardButton(text = 'Ver ultima nota', callback_data='ultnota')],
-            [InlineKeyboardButton(text = 'Ver nota numero....', callback_data='numnota')],
-        ])
-    )
+def newnotas_nota(update, context):
 
-    return INPUT_NOTASSEE
-
-def seeinput_notas(update, context):
-    id = update.effective_chat.id
-
-    #Guarda la nota
-    nota = update.message.text
-    #Informacion sobre el chat
     chat = update.message.chat
-  
-    infocom(id, 'Ver Notas', nota)
-
-    dir = 'listas/' + str(id) + '/notas' + '.txt'
-    with open(dir, 'r+') as archivo: 
-        contenido= archivo.read()
-        archivo.write(nota + "\n") 
-
-    #Envia la nota que se ha guardado
-    chat.send_message(
-        text = 'Guardado, ' + nota
-    )
-
-    #Termina 
-    return ConversationHandler.END
-
-def notas_vertodas_callback_handler(update, context):
+    
     id = update.effective_chat.id
+    
+    titulonota = update.message.text
+    print(titulonota)
 
-    query = update.callback_query
-    query.answer()
+    dir =  'listas/' + str(id) + '/notas/' + str(titulonota) +'.txt'
+    file = open(dir, "a")
+    file.close()
+
     
 
     #Cambia el primer mensaje por otro
-    query.edit_message_text(
-        text = '1',
+    update.message.reply_text('Thank you! I hope we can talk again some day.')
+
+
+    return NEWNOTA_FINAL
+
+def newnotas_final (update, context):
+
+    chat = update.message.chat
+    
+    nota = update.message.text
+
+    #Cambia el primer mensaje por otro
+    chat.send_message(
+        text = 'Guardado2, ' + nota
     )
 
+     #Termina 
     return ConversationHandler.END
 
 
@@ -376,50 +320,19 @@ if __name__ == '__main__':
     ))
 
     dispatcher.add_handler(CommandHandler('notas', notas))
-    '''
-    dispatcher.add_handler(ConversationHandler(
-        entry_points=[
-            CallbackQueryHandler(pattern='newnotas', callback=newnotas_callback_handler)
-        ],
-        states={
-            INPUT_NOTAS: [MessageHandler(Filters.text, newinput_notas)]
-        },
-        fallbacks=[]
-    ))
-
-    dispatcher.add_handler(ConversationHandler(
-        entry_points=[
-            CallbackQueryHandler(pattern='seenotas', callback=seenotas_callback_handler)
-        ],
-        states={
-            INPUT_NOTAS: [MessageHandler(Filters.text, seeinput_notas)]
-        },
-        fallbacks=[]
-    ))
-    '''
-
-    dispatcher.add_handler(ConversationHandler(
-        entry_points=[
-            CallbackQueryHandler(pattern='newnotas', callback=newnotas_callback_handler),
-            CallbackQueryHandler(pattern='seenotas', callback=seenotas_callback_handler),
-            CallbackQueryHandler(pattern='vertodas', callback=notas_vertodas_callback_handler),
-            CallbackQueryHandler(pattern='ultnota', callback=seenotas_callback_handler),
-            CallbackQueryHandler(pattern='numnota', callback=seenotas_callback_handler)
-        ],
-        states={
-            INPUT_NOTASNEW: [MessageHandler(Filters.text, newinput_notas)],
-            INPUT_NOTASSEE: [MessageHandler(Filters.text, seeinput_notas)],
-            #INPUT_NOTAS_VERTODAS: [MessageHandler(Filters.text, input_notas_vertodas)],
-            #INPUT_NOTAS_ULTNOTA: [MessageHandler(Filters.text, input_notas_ultnota)],
-            #INPUT_NOTAS_NUMNOTA: [MessageHandler(Filters.text, input_notas_numnota)]
-        },
-        fallbacks=[]
-    ))
-
-    
     
 
-
+    dispatcher.add_handler(ConversationHandler(
+        entry_points=[
+            CallbackQueryHandler(pattern='newnotas', callback=newnotas_titulo),
+            ],
+        states={
+            NEWNOTA_NOTA: [MessageHandler(Filters.text, newnotas_nota)],
+            NEWNOTA_FINAL: [MessageHandler(Filters.text, newnotas_final)]
+            
+        },
+        fallbacks=[],
+    ))
     
     #dispatcher.add_error_handler(error)
     
