@@ -1,4 +1,4 @@
-bot_token = "1837182286:AAFSDP59Gwy3RRJg3kfdfj3IueO4sZ3OyMM"
+bot_token = "BOT_TOKEN"
 
 from telegram.ext import CallbackQueryHandler, CommandHandler, ConversationHandler, Filters, MessageHandler, Updater, commandhandler #ENVIAR MENSAJES RESPONDIENDO
 import logging #INICIO DE SESION
@@ -227,7 +227,7 @@ def input_url(update, context):
     #Termina 
     return ConversationHandler.END
 
-
+'''
 NEWNOTA_NOTA = 0 
 NEWNOTA_FINAL = 0 
 
@@ -287,7 +287,7 @@ def newnotas_final (update, context):
      #Termina 
     return ConversationHandler.END
 
-
+''' 
 if __name__ == '__main__':
 
     updater = Updater(token = bot_token, use_context = True)
@@ -319,9 +319,8 @@ if __name__ == '__main__':
         fallbacks=[]
     ))
 
+    '''
     dispatcher.add_handler(CommandHandler('notas', notas))
-    
-
     dispatcher.add_handler(ConversationHandler(
         entry_points=[
             CallbackQueryHandler(pattern='newnotas', callback=newnotas_titulo),
@@ -333,7 +332,8 @@ if __name__ == '__main__':
         },
         fallbacks=[],
     ))
-    
+    '''
+
     #dispatcher.add_error_handler(error)
     
     updater.start_polling()
